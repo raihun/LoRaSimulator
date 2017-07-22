@@ -82,7 +82,7 @@ public class Node {
     int[] datalink = packet.getDataLink();
 
     // ノード検索
-    Node dstNode = this.nc.searchNodeById(datalink[0]);
+    Node dstNode = this.nc.getNodeById(datalink[0]);
     if(dstNode == null) return false;
     if(dstNode == this) return false; // 自分自身への送信を防ぐ
 

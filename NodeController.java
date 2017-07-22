@@ -35,13 +35,13 @@ public class NodeController {
     return true;
   }
 
-  //　ノード取得
+  //　ノード取得 (All)
   public ArrayList<Node> getNodes() {
     return this.nodeList;
   }
 
-  // ノード検索 (by ID)
-  public Node searchNodeById(int nodeId) {
+  // ノード取得 (by ID)
+  public Node getNodeById(int nodeId) {
     Node result = null;
 
     // 範囲チェック
