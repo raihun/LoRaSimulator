@@ -12,7 +12,9 @@ public class NodeController {
 
   // ノード追加
   public void addNode(int x, int y) {
-    nodeList.add(new Node(x, y, this.cntId++));
+    Node node = new Node(x, y, this.cntId++);
+    node.setNodeController(this);
+    nodeList.add(node);
   }
 
   // ノード削除

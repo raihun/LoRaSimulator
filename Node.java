@@ -1,5 +1,7 @@
 public class Node {
 
+  private static NodeController nc = null;
+
   private int id = -1;
   private int x = 0;
   private int y = 0;
@@ -15,6 +17,11 @@ public class Node {
     this.y = y;
     this.id = id;
     this.name = String.valueOf(this.id);
+  }
+
+  // インスタンス
+  public void setNodeController(NodeController nc) {
+    this.nc = nc;
   }
 
   // ノードID
