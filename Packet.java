@@ -1,15 +1,11 @@
 public class Packet {
 
-  private int ddst;
-  private int dsrc;
-  private int ndst;
-  private int nsrc;
-  private byte[] payload = new byte[50];
-
   // コンストラクタ
   public Packet() {}
 
   // データリンク層 操作
+  private int ddst;
+  private int dsrc;
   public void setDatalink(int dst, int src) {
     this.ddst = dst;
     this.dsrc = src;
@@ -20,6 +16,8 @@ public class Packet {
   }
 
   // ネットワーク層 操作
+  private int ndst;
+  private int nsrc;
   public void setNetwork(int dst, int src) {
     this.ndst = dst;
     this.nsrc = src;
@@ -28,6 +26,18 @@ public class Packet {
     int[] network = {this.ndst, this.nsrc};
     return network;
   }
+
+  // パケットタイプ 操作
+  private byte type;
+  public void setType(byte type) {
+    this.type = type;
+  }
+  public byte getType() {
+    return this.type;
+  }
+
+  // ペイロード操作
+  private byte[] payload = new byte[50];
 
 
 }
