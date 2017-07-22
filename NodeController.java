@@ -40,6 +40,25 @@ public class NodeController {
     return this.nodeList;
   }
 
+  // ノード検索 (by ID)
+  public Node searchNodeById(int nodeId) {
+    Node result = null;
+
+    // 範囲チェック
+    if(nodeId < 0 || this.cntId < nodeId) return null;
+
+    // 検索
+    for(Node node : this.nodeList) {
+      if(node.getId() == nodeId) {
+        result = node;
+        break;
+      }
+    }
+
+    // 返却
+    return result;
+  }
+
   // ノード間の距離算出
   public double getDistance(Node nodeA, Node nodeB) {
     int[] posA = nodeA.getPosition();

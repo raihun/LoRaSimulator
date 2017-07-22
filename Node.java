@@ -76,6 +76,34 @@ public class Node {
     return (this.getNowtime() < this.operationTime);
   }
 
+  // パケット送信
+  public boolean sendPacket(Packet packet) {
+    // 送信先(データリンク層)
+    int[] datalink = packet.getDataLink();
+
+    // ノード検索
+    Node dstNode = this.nc.searchNodeById(datalink[0]);
+    if(dstNode == null) return false;
+    if(dstNode == this) return false; // 自分自身への送信を防ぐ
+
+    // ノード間距離 確認
+    if(this.nc.getDistance(dstNode, this) > 100.0) {
+      return false;
+    }
+
+    // 送信
+    dstNode.receivePacket(packet);
+
+    // 返却
+    return true;
+  }
+
+  // パケット受信
+  public void receivePacket(Packet packet) {
+    System.out.println("[" + this.getId() + "] Receive!");
+    return;
+  }
+
   // GUI用
   private int cnt = 0;
   public int getCount() {
