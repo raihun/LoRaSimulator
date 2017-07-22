@@ -16,7 +16,7 @@ public class Node {
     this.x = x;
     this.y = y;
     this.id = id;
-    this.name = String.valueOf(this.id);
+    this.setName(String.valueOf(this.id));
   }
 
   // インスタンス
@@ -33,7 +33,7 @@ public class Node {
   }
 
   // ノード名
-  private String name = String.valueOf(this.id);
+  private String name = "";
   public void setName(String name) {
     this.name = name;
   }
@@ -61,7 +61,7 @@ public class Node {
   }
   public void forwardNowtime() {
     this.nowTime += 3;
-    this.nowTime %= 3600;
+    this.nowTime %= 3600; // 3600を法とする
   }
 
   // 稼働時間
