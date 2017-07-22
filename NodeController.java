@@ -59,6 +59,20 @@ public class NodeController {
     return result;
   }
 
+  // ノード取得 (by Distance)
+  public ArrayList<Node> getNodesByDistance(Node node, double distance) {
+    ArrayList<Node> result = new ArrayList<Node>();
+    for(Node _node : this.nodeList) {
+      if(node == _node) continue; // 対象ノードは含めない
+      if(this.getDistance(node, _node) <= distance) {
+        result.add(_node);
+      }
+    }
+    
+    // 返却
+    return result;
+  }
+
   // ノード間の距離算出
   public double getDistance(Node nodeA, Node nodeB) {
     int[] posA = nodeA.getPosition();
