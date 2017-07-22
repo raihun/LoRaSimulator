@@ -8,12 +8,12 @@ public class Packet {
 
   public Packet() {}
 
-  public setDatalink(int dst, int src) {
+  public void setDatalink(int dst, int src) {
     this.ddst = dst;
     this.dsrc = src;
   }
 
-  public setNetwork(int dst, int src) {
+  public void setNetwork(int dst, int src) {
     this.ndst = dst;
     this.nsrc = src;
   }
