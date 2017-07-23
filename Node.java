@@ -108,7 +108,41 @@ public class Node {
 
   // パケット受信
   public void receivePacket(Packet packet) {
-    System.out.println("[" + this.getId() + "] Receive!");
+    // パケット情報取得
+    int[] datalink = packet.getDatalink();
+    int[] network = packet.getNetwork();
+
+    // 自分宛以外のパケットを破棄
+    if(datalink[0] != this.id) {
+      packet = null;
+      return;
+    }
+
+    // デバッグ情報
+    String message = String.format("[Recv:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
+    System.out.println(message);
+
+    // タイプ別処理
+    switch(packet.getType()) {
+      case 0x00: // 未使用
+        break;
+
+      case 0x01: // PING
+        Packet _packet = (Packet)packet.clone();
+        _packet.setDatalink(datalink[1], datalink[0]);
+        _packet.setNetwork(network[1], network[0]);
+        _packet.setType((byte)0x02);
+        this.sendPacket(_packet);
+        break;
+
+      case 0x02: // PING-ECHO
+
+        break;
+    }
+
+    // 受信済みパケットは破棄
+    packet = null;
+
     return;
   }
 
