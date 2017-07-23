@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 public class Node {
+
+  private static NodeController nc = null;
 
   private int id = -1;
   private int x = 0;
@@ -14,7 +17,12 @@ public class Node {
     this.x = x;
     this.y = y;
     this.id = id;
-    this.name = String.valueOf(this.id);
+    this.setName(String.valueOf(this.id));
+  }
+
+  // インスタンス
+  public void setNodeController(NodeController nc) {
+    this.nc = nc;
   }
 
   // ノードID
@@ -26,7 +34,7 @@ public class Node {
   }
 
   // ノード名
-  private String name = String.valueOf(this.id);
+  private String name = "";
   public void setName(String name) {
     this.name = name;
   }
@@ -54,7 +62,7 @@ public class Node {
   }
   public void forwardNowtime() {
     this.nowTime += 3;
-    this.nowTime %= 3600;
+    this.nowTime %= 3600; // 3600を法とする
   }
 
   // 稼働時間
@@ -67,6 +75,75 @@ public class Node {
   }
   public boolean isOperation() {
     return (this.getNowtime() < this.operationTime);
+  }
+
+  // パケット送信
+  public boolean sendPacket(Packet packet) {
+    // パケット情報取得
+    int[] datalink = packet.getDatalink();
+    int[] network = packet.getNetwork();
+
+    // 自分宛へのパケットを破棄
+    if(datalink[0] == this.id) {
+      packet = null;
+      return false;
+    }
+
+    // デバッグ情報
+    String message = String.format("[Send:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
+    System.out.println(message);
+
+    // 電波が届く、周囲のノードへ送信
+    ArrayList<Node> nodeList = this.nc.getNodesByDistance(this, 100.0);
+    if(nodeList.size() < 1) return false;
+
+    for(Node node : nodeList) {
+      if(node == this) continue; // 自分自身への送信を防ぐ
+      node.receivePacket(packet);
+    }
+
+    // 返却
+    return true;
+  }
+
+  // パケット受信
+  public void receivePacket(Packet packet) {
+    // パケット情報取得
+    int[] datalink = packet.getDatalink();
+    int[] network = packet.getNetwork();
+
+    // 自分宛以外のパケットを破棄
+    if(datalink[0] != this.id) {
+      packet = null;
+      return;
+    }
+
+    // デバッグ情報
+    String message = String.format("[Recv:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
+    System.out.println(message);
+
+    // タイプ別処理
+    switch(packet.getType()) {
+      case 0x00: // 未使用
+        break;
+
+      case 0x01: // PING
+        Packet _packet = (Packet)packet.clone();
+        _packet.setDatalink(datalink[1], datalink[0]);
+        _packet.setNetwork(network[1], network[0]);
+        _packet.setType((byte)0x02);
+        this.sendPacket(_packet);
+        break;
+
+      case 0x02: // PING-ECHO
+
+        break;
+    }
+
+    // 受信済みパケットは破棄
+    packet = null;
+
+    return;
   }
 
   // GUI用

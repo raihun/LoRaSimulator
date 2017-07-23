@@ -107,7 +107,7 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
       // 線描画
       for(Node _node : nodeList) {
         if(node == _node) continue;
-        if(nc.getDistance(node, _node) < 100.0) {
+        if(nc.getDistance(node, _node) <= 100.0) {
           int[] _pos = _node.getPosition();
           buffer.drawLine(pos[0], pos[1], _pos[0], _pos[1]);
         }

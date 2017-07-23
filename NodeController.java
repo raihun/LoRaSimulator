@@ -12,7 +12,9 @@ public class NodeController {
 
   // ノード追加
   public void addNode(int x, int y) {
-    nodeList.add(new Node(x, y, this.cntId++));
+    Node node = new Node(x, y, this.cntId++);
+    node.setNodeController(this);
+    nodeList.add(node);
   }
 
   // ノード削除
@@ -33,9 +35,42 @@ public class NodeController {
     return true;
   }
 
-  //　ノード取得
+  //　ノード取得 (All)
   public ArrayList<Node> getNodes() {
     return this.nodeList;
+  }
+
+  // ノード取得 (by ID)
+  public Node getNodeById(int nodeId) {
+    Node result = null;
+
+    // 範囲チェック
+    if(nodeId < 0 || this.cntId < nodeId) return null;
+
+    // 検索
+    for(Node node : this.nodeList) {
+      if(node.getId() == nodeId) {
+        result = node;
+        break;
+      }
+    }
+
+    // 返却
+    return result;
+  }
+
+  // ノード取得 (by Distance)
+  public ArrayList<Node> getNodesByDistance(Node node, double distance) {
+    ArrayList<Node> result = new ArrayList<Node>();
+    for(Node _node : this.nodeList) {
+      if(node == _node) continue; // 対象ノードは含めない
+      if(this.getDistance(node, _node) <= distance) {
+        result.add(_node);
+      }
+    }
+    
+    // 返却
+    return result;
   }
 
   // ノード間の距離算出
