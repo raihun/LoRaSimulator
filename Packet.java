@@ -41,7 +41,7 @@ public class Packet implements Cloneable {
   }
 
   // パケットタイプ 操作
-  private byte type;
+  private byte type = 0x00;
   public void setType(byte type) {
     this.type = type;
   }
