@@ -139,10 +139,6 @@ public class Node {
 
         break;
     }
-
-    // 受信済みパケットは破棄
-    packet = null;
-
     return;
   }
 
