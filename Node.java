@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 public class Node {
 
   private static NodeController nc = null;
@@ -78,21 +79,28 @@ public class Node {
 
   // パケット送信
   public boolean sendPacket(Packet packet) {
-    // 送信先(データリンク層)
+    // パケット情報取得
     int[] datalink = packet.getDatalink();
+    int[] network = packet.getNetwork();
 
-    // ノード検索
-    Node dstNode = this.nc.getNodeById(datalink[0]);
-    if(dstNode == null) return false;
-    if(dstNode == this) return false; // 自分自身への送信を防ぐ
-
-    // ノード間距離 確認
-    if(this.nc.getDistance(dstNode, this) > 100.0) {
+    // 自分宛へのパケットを破棄
+    if(datalink[0] == this.id) {
+      packet = null;
       return false;
     }
 
-    // 送信
-    dstNode.receivePacket(packet);
+    // デバッグ情報
+    String message = String.format("[Send:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
+    System.out.println(message);
+
+    // 電波が届く、周囲のノードへ送信
+    ArrayList<Node> nodeList = this.nc.getNodesByDistance(this, 100.0);
+    if(nodeList.size() < 1) return false;
+
+    for(Node node : nodeList) {
+      if(node == this) continue; // 自分自身への送信を防ぐ
+      node.receivePacket(packet);
+    }
 
     // 返却
     return true;
