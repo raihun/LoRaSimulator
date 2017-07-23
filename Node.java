@@ -79,7 +79,7 @@ public class Node {
   // パケット送信
   public boolean sendPacket(Packet packet) {
     // 送信先(データリンク層)
-    int[] datalink = packet.getDataLink();
+    int[] datalink = packet.getDatalink();
 
     // ノード検索
     Node dstNode = this.nc.getNodeById(datalink[0]);

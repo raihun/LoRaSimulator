@@ -10,7 +10,7 @@ public class Packet {
     this.ddst = dst;
     this.dsrc = src;
   }
-  public int[] getDataLink() {
+  public int[] getDatalink() {
     int[] datalink = {this.ddst, this.dsrc};
     return datalink;
   }
