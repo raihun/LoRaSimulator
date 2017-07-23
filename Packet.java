@@ -56,7 +56,7 @@ public class Packet implements Cloneable {
   private byte[] payload = new byte[50];
 
   // ペイロード(ルーティングテーブル) 操作
-  private HashMap<Integer, ArrayList<Integer>> routeList;
+  private HashMap<Integer, ArrayList<Integer>> routeList = null;
   public void setRouteList(HashMap<Integer, ArrayList<Integer>> routeList) {
     this.routeList = routeList;
   }
