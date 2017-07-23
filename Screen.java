@@ -56,6 +56,13 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     btnNodeRemove.addActionListener( this );
     pControl.add( btnNodeRemove );
     this.add(pControl);
+
+    // 右下パネル
+    JPanel pPacket = new JPanel();
+    pPacket.setBounds( 1005, 500, 265, 40);
+    pPacket.setLayout( new GridLayout(1, 1) );
+    pPacket.setBackground( new Color(175, 220, 220) );
+    this.add(pPacket);
   }
 
   // インスタンス
