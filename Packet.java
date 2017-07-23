@@ -17,8 +17,8 @@ public class Packet implements Cloneable {
   }
 
   // データリンク層 操作
-  private int ddst;
-  private int dsrc;
+  private int ddst = -1;
+  private int dsrc = -1;
   public void setDatalink(int dst, int src) {
     this.ddst = dst;
     this.dsrc = src;
@@ -29,8 +29,8 @@ public class Packet implements Cloneable {
   }
 
   // ネットワーク層 操作
-  private int ndst;
-  private int nsrc;
+  private int ndst = -1;
+  private int nsrc = -1;
   public void setNetwork(int dst, int src) {
     this.ndst = dst;
     this.nsrc = src;
