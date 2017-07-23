@@ -1,7 +1,20 @@
-public class Packet {
+public class Packet implements Cloneable {
 
   // コンストラクタ
   public Packet() {}
+
+  // クローン
+  @Override
+  public Packet clone() {
+    Packet packet = new Packet();
+    try {
+      packet = (Packet)super.clone();
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+
+    return packet;
+  }
 
   // データリンク層 操作
   private int ddst;
