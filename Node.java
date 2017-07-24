@@ -142,6 +142,17 @@ public class Node {
     return;
   }
 
+  public void showRouteList() {
+    HashMap<Integer, ArrayList<Integer>> routeList = this.rc.getRouteList();
+    System.out.println("--------------------------------------------------");
+    for(int ndst : routeList.keySet()) {
+      ArrayList<Integer> data = routeList.get(ndst);
+      String line = String.format("[%3d] Dst:%3d\tNext:%3d\tHop:%3d", this.id, ndst, data.get(0), data.get(1));
+      System.out.println(line);
+    }
+    return;
+  }
+
   // GUI用
   private int cnt = 0;
   public int getCount() {

@@ -43,7 +43,7 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     // 右上パネル2
     JPanel pControl = new JPanel();
     pControl.setBounds( 1005, 50, 265, 40 );
-    pControl.setLayout( new GridLayout(1, 4) );
+    pControl.setLayout( new GridLayout(2, 2) );
     pControl.setBackground( new Color(175, 220, 220) );
 
     JButton btnNodeAdd = new JButton("Add");
@@ -55,6 +55,12 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     btnNodeRemove.setFont( new Font("MS ゴシック", Font.BOLD, 18) );
     btnNodeRemove.addActionListener( this );
     pControl.add( btnNodeRemove );
+
+    JButton btnNodeRoute = new JButton("Route");
+    btnNodeRoute.setFont( new Font("MS ゴシック", Font.BOLD, 18) );
+    btnNodeRoute.addActionListener( this );
+    pControl.add( btnNodeRoute );
+
     this.add(pControl);
 
     // 右下パネル
@@ -146,6 +152,8 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
       case "Remove":
         this.mode = "Remove";
         break;
+      case "Route":
+        this.mode = "Route";
     }
   }
   public void mousePressed( MouseEvent e ) {
@@ -155,10 +163,16 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
         nc.addNode(e.getX(), e.getY());
         this.render();
         break;
+
       case "Remove":
         nc.removeNode(e.getX(), e.getY());
         this.render();
         break;
+
+      case "Route":
+        nc.routeNode(e.getX(), e.getY());
+        break;
+
       default:
         break;
     }

@@ -35,6 +35,24 @@ public class NodeController {
     return true;
   }
 
+  public void routeNode(int x, int y) {
+    // ノード数チェック
+    if(this.nodeList.size() < 1) return;
+
+    // 距離確認
+    ArrayList<Node> selectNodeList = new ArrayList<Node>();
+    for(Node node : this.nodeList) {
+      int[] pos = node.getPosition();
+      double distance = Math.sqrt(Math.pow(x - pos[0], 2) + Math.pow(y - pos[1], 2));
+      if(distance < 5.0) selectNodeList.add(node);
+    }
+
+    // 該当ノードに指示
+    for(Node node : selectNodeList) {
+      node.showRouteList();
+    }
+  }
+
   //　ノード取得 (All)
   public ArrayList<Node> getNodes() {
     return this.nodeList;
