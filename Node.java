@@ -67,12 +67,28 @@ public class Node {
 
     // ランダムでパケットを送る (ここに書くべき処理ではない)
     Random rnd = new Random();
-    if(rnd.nextInt(100) == 0) {
+    if(rnd.nextInt(500) == 0) {
       Packet packet = new Packet();
       packet.setDatalink(-2, this.id);
       packet.setType((byte)0x01);
       packet.setRouteList(this.rc.getRouteList());
       this.sendPacket(packet);
+    }
+    if(rnd.nextInt(500) == 0) {
+      Packet packet = new Packet();
+      int ndst = rnd.nextInt(this.nc.getCountId());
+      int ddst = this.rc.getShortestRoute(ndst);
+      if(ddst != -1) {
+        packet.setDatalink(ddst, this.id);
+        packet.setNetwork(ndst, this.id);
+        packet.setType((byte)0x03);
+
+        // デバッグ情報
+        String message = String.format("[Ping:%3d]\tD:%3d <= %3d\tN:%3d <= %3d", this.id, ddst, this.id, ndst, this.id);
+        System.out.println(message);
+
+        this.sendPacket(packet);
+      }
     }
 
   }
@@ -96,7 +112,7 @@ public class Node {
     int[] network = packet.getNetwork();
 
     // 自分宛へのパケットを破棄
-    if(datalink[0] == this.id) {
+    if(datalink[0] == this.id || network[0] == this.id) {
       packet = null;
       return false;
     }
@@ -138,7 +154,7 @@ public class Node {
       case 0x00: // 未使用
         break;
 
-      case 0x01: // PING
+      case 0x01: // Request
         // ルーティングテーブル
         this.rc.addRoute(datalink[1], datalink[1], 1);
         this.rc.parseRouteList(datalink[1], packet.getRouteList());
@@ -152,10 +168,43 @@ public class Node {
         this.sendPacket(_packet);
         break;
 
-      case 0x02: // PING-ECHO
+      case 0x02: // Reply
         // ルーティングテーブル
         this.rc.addRoute(datalink[1], datalink[1], 1);
         this.rc.parseRouteList(datalink[1], packet.getRouteList());
+        break;
+
+      case 0x03: // PING
+        if(network[0] == this.id) {
+          Packet echoPacket = (Packet)packet.clone();
+          echoPacket.setDatalink(datalink[1], this.id);
+          echoPacket.setNetwork(network[1], this.id);
+          echoPacket.setType((byte)0x04);
+          this.sendPacket(echoPacket);
+        } else {
+          String message = String.format(" [Repeat-Up  :%3d]\tD:%3d <= %3d\tN:%3d <= %3d", this.id, datalink[0], datalink[1], network[0], network[1]);
+          System.out.println(message);
+          int ddst = this.rc.getShortestRoute(network[0]);
+          if(ddst != -1) {
+            packet.setDatalink(ddst, this.id);
+            this.sendPacket(packet);
+          }
+        }
+        break;
+
+      case 0x04: // PING-ECHO
+        if(network[0] == this.id) {
+          String message = String.format("[Echo:%3d]\tD:%3d <= %3d\tN:%3d <= %3d", this.id, datalink[0], datalink[1], network[0], network[1]);
+          System.out.println(message);
+        } else {
+          String message = String.format(" [Repeat-Down:%3d]\tD:%3d <= %3d\tN:%3d <= %3d", this.id, datalink[0], datalink[1], network[0], network[1]);
+          System.out.println(message);
+          int ddst = this.rc.getShortestRoute(network[0]);
+          if(ddst != -1) {
+            packet.setDatalink(ddst, this.id);
+            this.sendPacket(packet);
+          }
+        }
         break;
     }
     return;
