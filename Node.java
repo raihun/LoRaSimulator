@@ -1,7 +1,11 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 public class Node {
 
   private static NodeController nc = null;
+  private RouteController rc = null;
 
   private int id = -1;
   private int x = 0;
@@ -9,11 +13,8 @@ public class Node {
 
   // コンストラクタ
   public Node() {}
-  public Node(int x, int y) {
-    this.x = x;
-    this.y = y;
-  }
   public Node(int x, int y, int id) {
+    rc = new RouteController();
     this.x = x;
     this.y = y;
     this.id = id;
@@ -63,6 +64,17 @@ public class Node {
   public void forwardNowtime() {
     this.nowTime += 3;
     this.nowTime %= 3600; // 3600を法とする
+
+    // ランダムでパケットを送る (ここに書くべき処理ではない)
+    Random rnd = new Random();
+    if(rnd.nextInt(100) == 0) {
+      Packet packet = new Packet();
+      packet.setDatalink(-2, this.id);
+      packet.setType((byte)0x01);
+      packet.setRouteList(this.rc.getRouteList());
+      this.sendPacket(packet);
+    }
+
   }
 
   // 稼働時間
@@ -90,8 +102,8 @@ public class Node {
     }
 
     // デバッグ情報
-    String message = String.format("[Send:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
-    System.out.println(message);
+    // String message = String.format("[Send:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
+    // System.out.println(message);
 
     // 電波が届く、周囲のノードへ送信
     ArrayList<Node> nodeList = this.nc.getNodesByDistance(this, 100.0);
@@ -112,15 +124,14 @@ public class Node {
     int[] datalink = packet.getDatalink();
     int[] network = packet.getNetwork();
 
-    // 自分宛以外のパケットを破棄
-    if(datalink[0] != this.id) {
-      packet = null;
+    // 自分宛以外のパケットを破棄 ただし、ブロードキャスト(-2) は除く
+    if(datalink[0] != this.id && datalink[0] != -2) {
       return;
     }
 
     // デバッグ情報
-    String message = String.format("[Recv:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
-    System.out.println(message);
+    // String message = String.format("[Recv:%3d] D:%3d =>%3d      N:%3d =>%3d", this.id, datalink[1], datalink[0], network[1], network[0]);
+    // System.out.println(message);
 
     // タイプ別処理
     switch(packet.getType()) {
@@ -128,15 +139,23 @@ public class Node {
         break;
 
       case 0x01: // PING
+        // ルーティングテーブル
+        this.rc.addRoute(datalink[1], datalink[1], 1);
+        this.rc.parseRouteList(datalink[1], packet.getRouteList());
+
+        // 応答
         Packet _packet = (Packet)packet.clone();
-        _packet.setDatalink(datalink[1], datalink[0]);
+        _packet.setDatalink(datalink[1], this.id);
         _packet.setNetwork(network[1], network[0]);
         _packet.setType((byte)0x02);
+        _packet.setRouteList(this.rc.getRouteList());
         this.sendPacket(_packet);
         break;
 
       case 0x02: // PING-ECHO
-
+        // ルーティングテーブル
+        this.rc.addRoute(datalink[1], datalink[1], 1);
+        this.rc.parseRouteList(datalink[1], packet.getRouteList());
         break;
     }
     return;
