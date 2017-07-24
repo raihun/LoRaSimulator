@@ -161,6 +161,7 @@ public class Node {
     return;
   }
 
+  // ルーティングテーブル表示
   public void showRouteList() {
     HashMap<Integer, ArrayList<Integer>> routeList = this.rc.getRouteList();
     System.out.println("--------------------------------------------------");
