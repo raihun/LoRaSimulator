@@ -14,13 +14,13 @@ public class NodeController {
   public void addNode(int x, int y) {
     Node node = new Node(x, y, this.cntId++);
     node.setNodeController(this);
-    nodeList.add(node);
+    this.nodeList.add(node);
   }
 
   // ノード削除
   public boolean removeNode(int x, int y) {
     // ノード数チェック
-    if(nodeList.size() < 1) return false;
+    if(this.nodeList.size() < 1) return false;
 
     // 距離確認
     ArrayList<Node> removeNodeList = new ArrayList<Node>();
@@ -31,7 +31,9 @@ public class NodeController {
     }
 
     // 削除リストから削除
-    for(Node node : removeNodeList) nodeList.remove(nodeList.indexOf(node));
+    for(Node node : removeNodeList) {
+      nodeList.remove(nodeList.indexOf(node));
+    }
     return true;
   }
 
@@ -86,7 +88,7 @@ public class NodeController {
         result.add(_node);
       }
     }
-    
+
     // 返却
     return result;
   }
