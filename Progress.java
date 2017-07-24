@@ -33,8 +33,13 @@ public class Progress extends Thread {
   @Override
   public void run() {
     while(this.running) {
-      this.screen.render();
-      this.nc.forwardNowtime();
+      try {
+        this.screen.render();
+        this.nc.forwardNowtime();
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+
 
       try {
         Thread.sleep(1);
