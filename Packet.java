@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Packet implements Cloneable {
 
   // コンストラクタ
@@ -52,5 +55,13 @@ public class Packet implements Cloneable {
   // ペイロード操作
   private byte[] payload = new byte[50];
 
+  // ペイロード(ルーティングテーブル) 操作
+  private HashMap<Integer, ArrayList<Integer>> routeList = null;
+  public void setRouteList(HashMap<Integer, ArrayList<Integer>> routeList) {
+    this.routeList = routeList;
+  }
+  public HashMap<Integer, ArrayList<Integer>> getRouteList() {
+    return this.routeList;
+  }
 
 }

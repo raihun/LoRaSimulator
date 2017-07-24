@@ -43,7 +43,7 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     // 右上パネル2
     JPanel pControl = new JPanel();
     pControl.setBounds( 1005, 50, 265, 40 );
-    pControl.setLayout( new GridLayout(1, 4) );
+    pControl.setLayout( new GridLayout(2, 2) );
     pControl.setBackground( new Color(175, 220, 220) );
 
     JButton btnNodeAdd = new JButton("Add");
@@ -55,7 +55,20 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     btnNodeRemove.setFont( new Font("MS ゴシック", Font.BOLD, 18) );
     btnNodeRemove.addActionListener( this );
     pControl.add( btnNodeRemove );
+
+    JButton btnNodeRoute = new JButton("Route");
+    btnNodeRoute.setFont( new Font("MS ゴシック", Font.BOLD, 18) );
+    btnNodeRoute.addActionListener( this );
+    pControl.add( btnNodeRoute );
+
     this.add(pControl);
+
+    // 右下パネル
+    JPanel pPacket = new JPanel();
+    pPacket.setBounds( 1005, 500, 265, 40);
+    pPacket.setLayout( new GridLayout(1, 1) );
+    pPacket.setBackground( new Color(175, 220, 220) );
+    this.add(pPacket);
   }
 
   // インスタンス
@@ -78,46 +91,48 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
 
   private void renderNodes(Graphics buffer) {
     ArrayList<Node> nodeList = nc.getNodes();
-    for(Node node : nodeList) {
-      int[] pos = node.getPosition();
+    try {
+      for(Node node : nodeList) {
+        int[] pos = node.getPosition();
 
-      // 経過時間描画
-      double dNowTime = node.getNowtime() / 3600.0;
-      int arcTime = (int)(-360.0 * dNowTime);
+        // 経過時間描画
+        double dNowTime = node.getNowtime() / 3600.0;
+        int arcTime = (int)(-360.0 * dNowTime);
 
-      if(node.isOperation()) {
-        buffer.setColor( Color.red );
-      } else {
-        buffer.setColor( Color.black );
-      }
-      buffer.fillArc(pos[0]-10, pos[1]-10, 20, 20, 90, arcTime);
-      buffer.setColor( new Color(225, 225, 225) );
-      buffer.fillOval(pos[0]-5, pos[1]-5, 10, 10);
-      buffer.setColor( Color.black );
-
-      // ノード描画
-      buffer.drawRect(pos[0]-2, pos[1]-2, 4, 4);
-
-      // 電波描画
-      if(node.isOperation()) {
-        int cnt = node.getCount();
-        buffer.drawOval(pos[0]-cnt/2, pos[1]-cnt/2, cnt, cnt);
-      }
-
-      // 線描画
-      for(Node _node : nodeList) {
-        if(node == _node) continue;
-        if(nc.getDistance(node, _node) <= 100.0) {
-          int[] _pos = _node.getPosition();
-          buffer.drawLine(pos[0], pos[1], _pos[0], _pos[1]);
+        if(node.isOperation()) {
+          buffer.setColor( Color.red );
+        } else {
+          buffer.setColor( Color.black );
         }
+        buffer.fillArc(pos[0]-10, pos[1]-10, 20, 20, 90, arcTime);
+        buffer.setColor( new Color(225, 225, 225) );
+        buffer.fillOval(pos[0]-5, pos[1]-5, 10, 10);
+        buffer.setColor( Color.black );
+
+        // ノード描画
+        buffer.drawRect(pos[0]-2, pos[1]-2, 4, 4);
+
+        // 電波描画
+        if(node.isOperation()) {
+          int cnt = node.getCount();
+          buffer.drawOval(pos[0]-cnt/2, pos[1]-cnt/2, cnt, cnt);
+        }
+
+        // 線描画
+        for(Node _node : nodeList) {
+          if(node == _node) continue;
+          if(nc.getDistance(node, _node) <= 100.0) {
+            int[] _pos = _node.getPosition();
+            buffer.drawLine(pos[0], pos[1], _pos[0], _pos[1]);
+          }
+        }
+
+        // ノード名
+        buffer.drawString(node.getName(), pos[0]-5, pos[1]+30);
+
+        // 終了
       }
-
-      // ノード名
-      buffer.drawString(node.getName(), pos[0]-5, pos[1]+30);
-
-      // 終了
-    }
+    } catch(Exception e) {}
   }
 
   private String mode = "None";
@@ -137,6 +152,8 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
       case "Remove":
         this.mode = "Remove";
         break;
+      case "Route":
+        this.mode = "Route";
     }
   }
   public void mousePressed( MouseEvent e ) {
@@ -146,10 +163,16 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
         nc.addNode(e.getX(), e.getY());
         this.render();
         break;
+
       case "Remove":
         nc.removeNode(e.getX(), e.getY());
         this.render();
         break;
+
+      case "Route":
+        nc.routeNode(e.getX(), e.getY());
+        break;
+
       default:
         break;
     }
