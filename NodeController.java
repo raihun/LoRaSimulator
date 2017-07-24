@@ -3,16 +3,20 @@ import java.util.ArrayList;
 public class NodeController {
 
   private ArrayList<Node> nodeList;
-  private int cntId = 0;
+  private int coundId = 0;
 
   // コンストラクタ
   public NodeController() {
     this.nodeList = new ArrayList<Node>();
   }
 
+  public int getCountId() {
+    return this.coundId;
+  }
+
   // ノード追加
   public void addNode(int x, int y) {
-    Node node = new Node(x, y, this.cntId++);
+    Node node = new Node(x, y, this.coundId++);
     node.setNodeController(this);
     this.nodeList.add(node);
   }
@@ -37,6 +41,7 @@ public class NodeController {
     return true;
   }
 
+  // ルーティングテーブル表示
   public void routeNode(int x, int y) {
     // ノード数チェック
     if(this.nodeList.size() < 1) return;
@@ -65,7 +70,7 @@ public class NodeController {
     Node result = null;
 
     // 範囲チェック
-    if(nodeId < 0 || this.cntId < nodeId) return null;
+    if(nodeId < 0 || this.coundId < nodeId) return null;
 
     // 検索
     for(Node node : this.nodeList) {
