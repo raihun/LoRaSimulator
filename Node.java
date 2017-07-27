@@ -85,6 +85,7 @@ public class Node {
 
         // デバッグ情報
         String message = String.format("[Ping:%3d]\tD:%3d <= %3d\tN:%3d <= %3d", this.id, ddst, this.id, ndst, this.id);
+        System.out.println();
         System.out.println(message);
 
         this.sendPacket(packet);
@@ -219,6 +220,17 @@ public class Node {
       String line = String.format("[%3d] Dst:%3d\tNext:%3d\tHop:%3d", this.id, ndst, data.get(0), data.get(1));
       System.out.println(line);
     }
+    return;
+  }
+
+  // Requestパケット送信
+  public void sendRequestPacket() {
+    Random rnd = new Random();
+    Packet packet = new Packet();
+    packet.setDatalink(-2, this.id);
+    packet.setType((byte)0x01);
+    packet.setRouteList(this.rc.getRouteList());
+    this.sendPacket(packet);
     return;
   }
 
