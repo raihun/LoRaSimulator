@@ -61,6 +61,11 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     btnNodeRoute.addActionListener( this );
     pControl.add( btnNodeRoute );
 
+    JButton btnNodeRequest = new JButton("Request");
+    btnNodeRequest.setFont( new Font("MS ゴシック", Font.BOLD, 18) );
+    btnNodeRequest.addActionListener( this );
+    pControl.add( btnNodeRequest );
+
     this.add(pControl);
 
     // 右下パネル
@@ -68,6 +73,7 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
     pPacket.setBounds( 1005, 500, 265, 40);
     pPacket.setLayout( new GridLayout(1, 1) );
     pPacket.setBackground( new Color(175, 220, 220) );
+
     this.add(pPacket);
   }
 
@@ -154,6 +160,10 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
         break;
       case "Route":
         this.mode = "Route";
+        break;
+      case "Request":
+        this.mode = "Request";
+        break;
     }
   }
   public void mousePressed( MouseEvent e ) {
@@ -171,6 +181,10 @@ public class Screen extends JPanel implements MouseListener, MouseMotionListener
 
       case "Route":
         nc.routeNode(e.getX(), e.getY());
+        break;
+
+      case "Request":
+        nc.requestNode(e.getX(), e.getY());
         break;
 
       default:
